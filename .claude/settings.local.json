@@ -4,7 +4,8 @@
       "Bash(Get-ChildItem -Force)",
       "Bash(Select-Object -ExpandProperty Name)",
       "Bash(Sort-Object)",
-      "PowerShell(Head *)"
+      "PowerShell(Head *)",
+      "PowerShell(New-Item *)"
     ]
   }
 }
