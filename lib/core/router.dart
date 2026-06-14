@@ -30,8 +30,10 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoute.newNote,
+      name: AppRoute.newNote,
       builder: (context, state) {
         var data = state.extra;
+        print('data: $data');
         if (data is Map<String, String>) {
           String book = data['book'] ?? '';
           String chapter = data['chapter'] ?? '';
@@ -44,6 +46,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '${AppRoute.note}/:id',
+      name: AppRoute.note,
       builder: (context, state) => NoteScreen(noteId: state.pathParameters['id']!),
     ),
   ],

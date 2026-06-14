@@ -6,6 +6,7 @@ import 'package:biblioteca/core/stylesheet.dart';
 import 'package:biblioteca/domain/entities/verse.dart';
 import 'package:biblioteca/viewmodels/bible_viewmodel.dart';
 import 'package:biblioteca/viewmodels/note_viewmodel.dart';
+import 'package:biblioteca/views/bible/bible_navigation_sheet.dart';
 import 'package:biblioteca/views/bible/verse_select_option_button.dart';
 
 class BibleScreen extends StatefulWidget {
@@ -24,6 +25,9 @@ class _StepperButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var viewModel = context.read<BibleViewModel>();
+    int preChapter = viewModel.hasPreviousChapter ? int.parse(viewModel.selectedChapter!.chapterNum) - 1 : 1;
+    int nextChapter = viewModel.hasNextChapter ? int.parse(viewModel.selectedChapter!.chapterNum) + 1 : int.parse(viewModel.selectedChapter!.chapterNum);
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8), fixedSize: const Size.fromHeight(36), tapTargetSize: MaterialTapTargetSize.shrinkWrap, shape: const RoundedRectangleBorder()),
@@ -32,13 +36,13 @@ class _StepperButton extends StatelessWidget {
               spacing: 4,
               children: [
                 Icon(icon, size: 20, color: onPressed != null ? Stylesheet.blue : Stylesheet.theme.withOpacity(0.3)),
-                Text(isLeft ? '이전  장' : '다음 장', style: TextStyle(fontSize: 12, color: onPressed != null ? Stylesheet.theme : Stylesheet.theme.withOpacity(0.3))),
+                Text('${preChapter} 장', style: TextStyle(fontSize: 12, color: onPressed != null ? Stylesheet.theme : Stylesheet.theme.withOpacity(0.3))),
               ],
             )
           : Row(
               spacing: 4,
               children: [
-                Text('다음 장', style: TextStyle(fontSize: 12, color: onPressed != null ? Stylesheet.theme : Stylesheet.theme.withOpacity(0.3))),
+                Text('${nextChapter} 장', style: TextStyle(fontSize: 12, color: onPressed != null ? Stylesheet.theme : Stylesheet.theme.withOpacity(0.3))),
                 Icon(icon, size: 20, color: onPressed != null ? Stylesheet.blue : Stylesheet.theme.withOpacity(0.3)),
               ],
             ),
@@ -82,9 +86,8 @@ class _BibleScreenState extends State<BibleScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Stylesheet.primary,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (_) => SizedBox(height: MediaQuery.of(context).size.height * 0.75),
+      backgroundColor: Colors.transparent,
+      builder: (_) => BibleNavigationSheet(vm: vm),
     );
   }
 
@@ -107,7 +110,8 @@ class _BibleScreenState extends State<BibleScreen> {
                   verseText: verseText,
                   onTap: () {
                     Navigator.pop(context);
-                    context.pushNamed(AppRoute.newNote, queryParameters: {'bookKorean': bibleVm.selectedBook!.korean, 'chapterNum': bibleVm.selectedChapter!.chapterNum, 'verseNum': verse.verseNum});
+                    print('data: ${bibleVm.selectedBook!.korean}, ${bibleVm.selectedChapter!.chapterNum}, ${verse.verseNum}');
+                    context.pushNamed(AppRoute.newNote, extra: {'book': bibleVm.selectedBook!.korean, 'chapter': bibleVm.selectedChapter!.chapterNum, 'verse': verse.verseNum});
                   },
                 ),
               ),
