@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../domain/entities/verse.dart';
 import '../viewmodels/bible_viewmodel.dart';
+import '../viewmodels/note_viewmodel.dart';
 import 'bible_navigation_sheet.dart';
+import 'verse_memo_sheet.dart';
 
 class VerseScreen extends StatelessWidget {
   const VerseScreen({super.key});
@@ -17,6 +20,28 @@ class VerseScreen extends StatelessWidget {
       builder: (_) => SizedBox(
         height: MediaQuery.of(context).size.height * 0.75,
         child: BibleNavigationSheet(vm: vm),
+      ),
+    );
+  }
+
+  void _openVerseMemoSheet(BuildContext context, BibleViewModel bibleVm, Verse verse) {
+    final noteVm = context.read<NoteViewModel>();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.85,
+        child: VerseMemoSheet(
+          noteVm: noteVm,
+          books: bibleVm.books,
+          book: bibleVm.selectedBook!,
+          initialChapterNum: bibleVm.selectedChapter!.chapterNum,
+          initialVerseNum: verse.verseNum,
+        ),
       ),
     );
   }
@@ -44,23 +69,34 @@ class VerseScreen extends StatelessWidget {
                   itemCount: vm.verses.length,
                   itemBuilder: (context, index) {
                     final verse = vm.verses[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 32,
-                            child: Text(
-                              verse.verseNum,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
+                    return Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () => _openVerseMemoSheet(context, vm, verse),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 6,
+                            horizontal: 4,
                           ),
-                          Expanded(child: Text(verse.text)),
-                        ],
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 32,
+                                child: Text(
+                                  verse.verseNum,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                              Expanded(child: Text(verse.text)),
+                            ],
+                          ),
+                        ),
                       ),
                     );
                   },

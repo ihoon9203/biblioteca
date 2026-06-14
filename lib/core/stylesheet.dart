@@ -1,0 +1,148 @@
+import 'package:flutter/material.dart';
+
+abstract final class Stylesheet {
+  // ── Colors ───────────────────────────────────────────────────────────────
+  static const Color primary = Color(0xFFFFFFFF);
+  static const Color theme = Color(0xFF386BF6);
+  static const Color label = Color(0xFF273B4A);
+  static const Color secondaryLabel = Color(0xFF595959);
+  static const Color tertiaryLabel = Color(0x78DFE9FF); // DFE9FF @ 47%
+  static const Color themeLight = Color(0xFF9DB2CE);
+  static const Color themeDark = Color(0xFF273B4A);
+  static const Color blue = Color(0xFF386BF6);
+  static const Color noteBackground = Color(0xFFDDEBFF);
+  static const Color buttonPink = Color(0xFFFF2D55);
+
+  // ── Gradients ─────────────────────────────────────────────────────────────
+  static const LinearGradient aiGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF6155F5), Color(0xFFFF2D55)],
+  );
+
+  static const LinearGradient aiButton = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF386BF6), Color(0xFF9747FF)],
+  );
+
+  static const LinearGradient noteBackgroundAi = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFDFC7FF), Color(0xFFFFB9C6)],
+  );
+
+  // ── Shadows ───────────────────────────────────────────────────────────────
+  static const List<BoxShadow> whiteCardShadow = [
+    BoxShadow(blurRadius: 16, color: Color(0x40000000)),
+  ];
+
+  static const List<BoxShadow> blueCardShadow = [
+    BoxShadow(blurRadius: 16, color: Color(0x40002179)),
+  ];
+
+  static const List<BoxShadow> buttonShadow = [
+    BoxShadow(blurRadius: 16, color: Color(0x0D002179)),
+  ];
+
+  static const List<BoxShadow> iconButtonWhiteShadow = [
+    BoxShadow(blurRadius: 16, color: Color(0x80386BF6)),
+  ];
+
+  static const List<BoxShadow> iconButtonBlueShadow = [
+    BoxShadow(blurRadius: 16, color: Color(0x80386BF6)),
+  ];
+
+  static const List<BoxShadow> saveButtonShadow = [
+    BoxShadow(blurRadius: 4, color: Color(0xFF386BF6)),
+  ];
+
+  // ── Decorations ───────────────────────────────────────────────────────────
+  static const BoxDecoration whiteCardDecoration = BoxDecoration(
+    color: primary,
+    borderRadius: BorderRadius.all(Radius.circular(20)),
+    border: Border.fromBorderSide(BorderSide(color: Color(0xFFE6E9ED))),
+  );
+
+  static const BoxDecoration blueCardDecoration = BoxDecoration(
+    color: blue,
+    borderRadius: BorderRadius.all(Radius.circular(20)),
+  );
+
+  static const BoxDecoration unselectedButtonDecoration = BoxDecoration(
+    color: primary,
+    borderRadius: BorderRadius.all(Radius.circular(16)),
+    border: Border.fromBorderSide(BorderSide(color: blue)),
+  );
+
+  static const BoxDecoration selectedButtonDecoration = BoxDecoration(
+    color: blue,
+    borderRadius: BorderRadius.all(Radius.circular(16)),
+  );
+
+  static const BoxDecoration iconButtonWhiteDecoration = BoxDecoration(
+    color: primary,
+    borderRadius: BorderRadius.all(Radius.circular(40)),
+  );
+
+  static const BoxDecoration iconButtonBlueDecoration = BoxDecoration(
+    color: blue,
+    borderRadius: BorderRadius.all(Radius.circular(40)),
+  );
+
+  static const BoxDecoration rangeTextFieldDecoration = BoxDecoration(
+    color: primary,
+    borderRadius: BorderRadius.all(Radius.circular(8)),
+    border: Border.fromBorderSide(BorderSide(color: Color(0x78DFE9FF))),
+  );
+
+  static const BoxDecoration bigButtonDecoration = BoxDecoration(
+    gradient: aiGradient,
+    borderRadius: BorderRadius.all(Radius.circular(16)),
+  );
+
+  static const BoxDecoration recordButtonDecoration = BoxDecoration(
+    color: buttonPink,
+    borderRadius: BorderRadius.all(Radius.circular(16)),
+  );
+
+  static const BoxDecoration cardDecoration = BoxDecoration(
+    color: noteBackground,
+    borderRadius: BorderRadius.all(Radius.circular(20)),
+  );
+
+  static const BoxDecoration cardAiDecoration = BoxDecoration(
+    gradient: noteBackgroundAi,
+    borderRadius: BorderRadius.all(Radius.circular(20)),
+    border: Border.fromBorderSide(BorderSide(color: noteBackground)),
+  );
+
+  static const BoxDecoration cardAddDecoration = BoxDecoration(
+    gradient: noteBackgroundAi,
+    borderRadius: BorderRadius.all(Radius.circular(20)),
+    border: Border.fromBorderSide(BorderSide(color: Color(0xFFE6E9ED))),
+  );
+
+  static const BoxDecoration aiChatButtonDecoration = BoxDecoration(
+    gradient: aiGradient,
+    borderRadius: BorderRadius.all(Radius.circular(9999)),
+  );
+
+  static const BoxDecoration saveButtonDecoration = BoxDecoration(
+    color: theme,
+    borderRadius: BorderRadius.all(Radius.circular(9999)),
+    border: Border.fromBorderSide(BorderSide(color: blue)),
+  );
+
+  // ── Padding ───────────────────────────────────────────────────────────────
+  static const EdgeInsets iconButtonPadding = EdgeInsets.all(40);
+  static const EdgeInsets bigButtonPadding = EdgeInsets.symmetric(vertical: 20);
+  static const EdgeInsets recordButtonPadding = EdgeInsets.symmetric(vertical: 4);
+  static const EdgeInsets cardPadding = EdgeInsets.all(16);
+  static const EdgeInsets aiChatButtonPadding = EdgeInsets.all(16);
+  static const EdgeInsets saveButtonPadding = EdgeInsets.all(16);
+
+  // ── Icon Colors ───────────────────────────────────────────────────────────
+  static const Color iconButtonWhiteIconColor = blue;
+  static const Color iconButtonBlueIconColor = primary;
+}
