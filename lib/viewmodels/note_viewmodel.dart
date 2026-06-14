@@ -9,11 +9,7 @@ class NoteViewModel extends ChangeNotifier {
   final GetNotesUseCase getNotesUseCase;
   final DeleteNoteUseCase deleteNoteUseCase;
 
-  NoteViewModel({
-    required this.saveNoteUseCase,
-    required this.getNotesUseCase,
-    required this.deleteNoteUseCase,
-  });
+  NoteViewModel({required this.saveNoteUseCase, required this.getNotesUseCase, required this.deleteNoteUseCase});
 
   List<Note> _notes = [];
   List<Note> get notes => List.unmodifiable(_notes);
@@ -42,4 +38,22 @@ class NoteViewModel extends ChangeNotifier {
     await deleteNoteUseCase(id);
     await loadNotes();
   }
+
+  bool hasNoteForVerse(String bookKorean, String chapterNum, String verseNum) {
+    final v = int.tryParse(verseNum) ?? 0;
+    return _notes.any(
+      (note) =>
+          note.bookKorean == bookKorean &&
+          note.chapterNum == chapterNum &&
+          note.verseRanges.any((r) {
+            final start = int.tryParse(r.startVerseNum) ?? 0;
+            final end = int.tryParse(r.endVerseNum) ?? 0;
+            return v >= start && v <= end;
+          }),
+    );
+  }
+
+  void createNoteForVerse(String korean, String chapterNum, String verseNum, String text) {}
+
+  void openNoteForVerse(BuildContext context, String korean, String chapterNum, String verseNum) {}
 }

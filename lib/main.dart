@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'core/router.dart';
+import 'core/stylesheet.dart';
 import 'data/datasources/bible_local_datasource.dart';
 import 'data/datasources/notes_local_datasource.dart';
 import 'data/datasources/preferences_local_datasource.dart';
@@ -16,7 +18,6 @@ import 'domain/usecases/save_last_read_usecase.dart';
 import 'domain/usecases/save_note_usecase.dart';
 import 'viewmodels/bible_viewmodel.dart';
 import 'viewmodels/note_viewmodel.dart';
-import 'views/main_screen.dart';
 
 void main() {
   runApp(const BibliotecaApp());
@@ -28,7 +29,8 @@ class BibliotecaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bibleRepository = BibleRepositoryImpl(BibleLocalDataSource());
-    final prefsRepository = PreferencesRepositoryImpl(PreferencesLocalDataSource());
+    final prefsRepository =
+        PreferencesRepositoryImpl(PreferencesLocalDataSource());
     final noteRepository = NoteRepositoryImpl(NotesLocalDataSource());
 
     return MultiProvider(
@@ -50,13 +52,16 @@ class BibliotecaApp extends StatelessWidget {
           ),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'Biblioteca',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Stylesheet.theme,
+          ),
+          fontFamily: 'Pretendard',
           useMaterial3: true,
         ),
-        home: const MainScreen(),
+        routerConfig: appRouter,
       ),
     );
   }

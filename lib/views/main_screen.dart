@@ -1,36 +1,48 @@
 import 'package:flutter/material.dart';
-import 'bible_navigator.dart';
-import 'word_screen.dart';
-import 'my_page_screen.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import '../core/stylesheet.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final StatefulNavigationShell navigationShell;
+
+  const MainScreen({super.key, required this.navigationShell});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
-
+  int index = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: const [
-          BibleNavigator(),
-          WordScreen(),
-          MyPageScreen(),
-        ],
-      ),
+      body: widget.navigationShell,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: '성경'),
-          BottomNavigationBarItem(icon: Icon(Icons.format_quote), label: '말씀'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이페이지'),
+        currentIndex: widget.navigationShell.currentIndex,
+        onTap: (index) {
+          setState(() {
+            this.index = index;
+          });
+          widget.navigationShell.goBranch(index, initialLocation: index == widget.navigationShell.currentIndex);
+        },
+        selectedItemColor: Stylesheet.theme,
+        unselectedItemColor: Stylesheet.themeLight,
+        backgroundColor: Stylesheet.primary,
+        elevation: 0,
+        items: [
+          BottomNavigationBarItem(
+            icon: index == 0 ? SvgPicture.asset('assets/icons/Book_open_fill.svg', width: 24, height: 24, color: Stylesheet.theme) : SvgPicture.asset('assets/icons/Book_open_light.svg', width: 24, height: 24, color: Stylesheet.themeLight),
+            label: '성경',
+          ),
+          BottomNavigationBarItem(
+            icon: index == 1 ? SvgPicture.asset('assets/icons/Bookmark_fill.svg', width: 24, height: 24, color: Stylesheet.theme) : SvgPicture.asset('assets/icons/Bookmark_light.svg', width: 24, height: 24, color: Stylesheet.themeLight),
+            label: '말씀노트',
+          ),
+          BottomNavigationBarItem(
+            icon: index == 2 ? SvgPicture.asset('assets/icons/User_fill.svg', width: 24, height: 24, color: Stylesheet.theme) : SvgPicture.asset('assets/icons/User_light.svg', width: 24, height: 24, color: Stylesheet.themeLight),
+            label: '나',
+          ),
         ],
       ),
     );
