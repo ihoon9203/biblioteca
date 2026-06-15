@@ -3,9 +3,9 @@ import '../../domain/repositories/preferences_repository.dart';
 import '../datasources/preferences_local_datasource.dart';
 
 class PreferencesRepositoryImpl implements PreferencesRepository {
-  final PreferencesLocalDataSource dataSource;
 
   PreferencesRepositoryImpl(this.dataSource);
+  final PreferencesLocalDataSource dataSource;
 
   @override
   Future<void> saveLastRead(LastReadPosition position) =>
@@ -13,7 +13,7 @@ class PreferencesRepositoryImpl implements PreferencesRepository {
 
   @override
   Future<LastReadPosition?> getLastRead() async {
-    final data = await dataSource.getLastRead();
+    final Map<String, String>? data = await dataSource.getLastRead();
     if (data == null) return null;
     return LastReadPosition(
       bookKorean: data['bookKorean']!,

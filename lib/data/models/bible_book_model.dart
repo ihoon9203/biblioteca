@@ -11,7 +11,7 @@ class BibleBookModel extends BibleBook {
   });
 
   factory BibleBookModel.fromJson(Map<String, dynamic> json) {
-    final chapters = (json['chapters'] as List)
+    final List<ChapterModel> chapters = (json['chapters'] as List)
         .map((c) => ChapterModel.fromJson(c as Map<String, dynamic>))
         .toList();
     return BibleBookModel(

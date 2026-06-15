@@ -12,12 +12,6 @@ import '../domain/usecases/save_last_read_usecase.dart';
 enum ViewState { idle, loading, error }
 
 class BibleViewModel extends ChangeNotifier {
-  final GetAllBooksUseCase getAllBooksUseCase;
-  final GetChaptersUseCase getChaptersUseCase;
-  final GetVersesUseCase getVersesUseCase;
-  final SaveLastReadUseCase saveLastReadUseCase;
-  final GetLastReadUseCase getLastReadUseCase;
-
   BibleViewModel({
     required this.getAllBooksUseCase,
     required this.getChaptersUseCase,
@@ -25,6 +19,11 @@ class BibleViewModel extends ChangeNotifier {
     required this.saveLastReadUseCase,
     required this.getLastReadUseCase,
   });
+  final GetAllBooksUseCase getAllBooksUseCase;
+  final GetChaptersUseCase getChaptersUseCase;
+  final GetVersesUseCase getVersesUseCase;
+  final SaveLastReadUseCase saveLastReadUseCase;
+  final GetLastReadUseCase getLastReadUseCase;
 
   ViewState _state = ViewState.idle;
   ViewState get state => _state;
@@ -85,22 +84,28 @@ class BibleViewModel extends ChangeNotifier {
 
   bool get hasPreviousChapter {
     if (_selectedBook == null || _selectedChapter == null) return false;
-    final chapterIndex = _selectedBook!.chapters.indexWhere((c) => c.chapterNum == _selectedChapter!.chapterNum);
-    final bookIndex = _books.indexWhere((b) => b.korean == _selectedBook!.korean);
+    final int chapterIndex = _selectedBook!.chapters.indexWhere(
+      (c) => c.chapterNum == _selectedChapter!.chapterNum,
+    );
+    final int bookIndex = _books.indexWhere((b) => b.korean == _selectedBook!.korean);
     return chapterIndex > 0 || bookIndex > 0;
   }
 
   bool get hasNextChapter {
     if (_selectedBook == null || _selectedChapter == null) return false;
-    final chapterIndex = _selectedBook!.chapters.indexWhere((c) => c.chapterNum == _selectedChapter!.chapterNum);
-    final bookIndex = _books.indexWhere((b) => b.korean == _selectedBook!.korean);
+    final int chapterIndex = _selectedBook!.chapters.indexWhere(
+      (c) => c.chapterNum == _selectedChapter!.chapterNum,
+    );
+    final int bookIndex = _books.indexWhere((b) => b.korean == _selectedBook!.korean);
     return chapterIndex < _selectedBook!.chapters.length - 1 || bookIndex < _books.length - 1;
   }
 
   Future<void> goToPreviousChapter() async {
     if (_selectedBook == null || _selectedChapter == null) return;
-    final bookIndex = _books.indexWhere((b) => b.korean == _selectedBook!.korean);
-    final chapterIndex = _selectedBook!.chapters.indexWhere((c) => c.chapterNum == _selectedChapter!.chapterNum);
+    final int bookIndex = _books.indexWhere((b) => b.korean == _selectedBook!.korean);
+    final int chapterIndex = _selectedBook!.chapters.indexWhere(
+      (c) => c.chapterNum == _selectedChapter!.chapterNum,
+    );
 
     if (chapterIndex > 0) {
       await selectChapter(_selectedBook!.chapters[chapterIndex - 1]);
@@ -112,8 +117,10 @@ class BibleViewModel extends ChangeNotifier {
 
   Future<void> goToNextChapter() async {
     if (_selectedBook == null || _selectedChapter == null) return;
-    final bookIndex = _books.indexWhere((b) => b.korean == _selectedBook!.korean);
-    final chapterIndex = _selectedBook!.chapters.indexWhere((c) => c.chapterNum == _selectedChapter!.chapterNum);
+    final int bookIndex = _books.indexWhere((b) => b.korean == _selectedBook!.korean);
+    final int chapterIndex = _selectedBook!.chapters.indexWhere(
+      (c) => c.chapterNum == _selectedChapter!.chapterNum,
+    );
 
     if (chapterIndex < _selectedBook!.chapters.length - 1) {
       await selectChapter(_selectedBook!.chapters[chapterIndex + 1]);

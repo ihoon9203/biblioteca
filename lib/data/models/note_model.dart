@@ -27,7 +27,7 @@ class NoteModel extends Note {
   );
 
   factory NoteModel.fromJson(Map<String, dynamic> json) {
-    final ranges = (json['verseRanges'] as List).map((r) {
+    final List<VerseRange> ranges = (json['verseRanges'] as List).map((r) {
       final m = r as Map<String, dynamic>;
       return VerseRange(
         bookKorean: m['book'] as String,
@@ -38,11 +38,11 @@ class NoteModel extends Note {
       );
     }).toList();
     final memoTypeStr = json['memoType'] as String?;
-    final memoType = memoTypeStr == null
+    final MemoType? memoType = memoTypeStr == null
         ? null
         : MemoType.values.firstWhere(
             (e) => e.name == memoTypeStr,
-            orElse: () => MemoType.personal,
+            orElse: () => MemoType.qt,
           );
     return NoteModel(
       id: json['id'] as String,

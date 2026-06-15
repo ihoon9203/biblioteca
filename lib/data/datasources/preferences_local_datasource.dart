@@ -5,15 +5,15 @@ class PreferencesLocalDataSource {
   static const _keyChapterNum = 'last_read_chapter_num';
 
   Future<void> saveLastRead(String bookKorean, String chapterNum) async {
-    final prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyBookKorean, bookKorean);
     await prefs.setString(_keyChapterNum, chapterNum);
   }
 
   Future<Map<String, String>?> getLastRead() async {
-    final prefs = await SharedPreferences.getInstance();
-    final bookKorean = prefs.getString(_keyBookKorean);
-    final chapterNum = prefs.getString(_keyChapterNum);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? bookKorean = prefs.getString(_keyBookKorean);
+    final String? chapterNum = prefs.getString(_keyChapterNum);
     if (bookKorean == null || chapterNum == null) return null;
     return {'bookKorean': bookKorean, 'chapterNum': chapterNum};
   }

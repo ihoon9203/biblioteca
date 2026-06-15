@@ -7,7 +7,8 @@
       "PowerShell(Head *)",
       "PowerShell(New-Item *)",
       "Bash(flutter pub *)",
-      "Bash(flutter analyze *)"
+      "Bash(flutter analyze *)",
+      "PowerShell(flutter analyze *)"
     ]
   }
 }

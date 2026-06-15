@@ -37,7 +37,7 @@ class _NotesScreenState extends State<NotesScreen> {
 
   String _rangeLabel(Note note) {
     if (note.verseRanges.isEmpty) return '';
-    final r = note.verseRanges.first;
+    final VerseRange r = note.verseRanges.first;
     return '${r.bookKorean}: ${r.startChapterNum}:${r.startVerseNum}'
         ' ~ ${r.endChapterNum}:${r.endVerseNum}';
   }
@@ -49,7 +49,7 @@ class _NotesScreenState extends State<NotesScreen> {
   Widget build(BuildContext context) {
     return Consumer<NoteViewModel>(
       builder: (context, vm, _) {
-        final items = _buildItems(vm.notes);
+        final List<_ListItem> items = _buildItems(vm.notes);
 
         return Scaffold(
           backgroundColor: Stylesheet.primary,
@@ -112,7 +112,7 @@ class _NotesScreenState extends State<NotesScreen> {
                               horizontal: 20, vertical: 16),
                           itemCount: items.length,
                           itemBuilder: (context, index) {
-                            final item = items[index];
+                            final _ListItem item = items[index];
                             if (item is _HeaderItem) {
                               return Padding(
                                 padding: const EdgeInsets.only(
@@ -127,7 +127,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                 ),
                               );
                             }
-                            final note = (item as _NoteItem).note;
+                            final Note note = (item as _NoteItem).note;
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: Container(
@@ -210,11 +210,11 @@ class _NotesScreenState extends State<NotesScreen> {
 abstract class _ListItem {}
 
 class _HeaderItem extends _ListItem {
-  final String label;
   _HeaderItem(this.label);
+  final String label;
 }
 
 class _NoteItem extends _ListItem {
-  final Note note;
   _NoteItem(this.note);
+  final Note note;
 }

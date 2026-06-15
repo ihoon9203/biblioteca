@@ -1,13 +1,17 @@
-import 'package:biblioteca/core/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:biblioteca/core/stylesheet.dart';
-import 'package:biblioteca/domain/entities/verse.dart';
-import 'package:biblioteca/viewmodels/bible_viewmodel.dart';
-import 'package:biblioteca/viewmodels/note_viewmodel.dart';
-import 'package:biblioteca/views/bible/bible_navigation_sheet.dart';
-import 'package:biblioteca/views/bible/verse_select_option_button.dart';
+
+import '../../core/router.dart';
+import '../../core/stylesheet.dart';
+import '../../domain/entities/bible_book.dart';
+import '../../domain/entities/chapter.dart';
+import '../../domain/entities/last_read_position.dart';
+import '../../domain/entities/verse.dart';
+import '../../viewmodels/bible_viewmodel.dart';
+import '../../viewmodels/note_viewmodel.dart';
+import 'bible_navigation_sheet.dart';
+import 'verse_select_option_button.dart';
 
 class BibleScreen extends StatefulWidget {
   const BibleScreen({super.key});
@@ -25,25 +29,54 @@ class _StepperButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var viewModel = context.read<BibleViewModel>();
-    int preChapter = viewModel.hasPreviousChapter ? int.parse(viewModel.selectedChapter!.chapterNum) - 1 : 1;
-    int nextChapter = viewModel.hasNextChapter ? int.parse(viewModel.selectedChapter!.chapterNum) + 1 : int.parse(viewModel.selectedChapter!.chapterNum);
+    final BibleViewModel viewModel = context.read<BibleViewModel>();
+    final int preChapter = viewModel.hasPreviousChapter
+        ? int.parse(viewModel.selectedChapter!.chapterNum) - 1
+        : 1;
+    final int nextChapter = viewModel.hasNextChapter
+        ? int.parse(viewModel.selectedChapter!.chapterNum) + 1
+        : int.parse(viewModel.selectedChapter!.chapterNum);
     return TextButton(
       onPressed: onPressed,
-      style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8), fixedSize: const Size.fromHeight(36), tapTargetSize: MaterialTapTargetSize.shrinkWrap, shape: const RoundedRectangleBorder()),
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        fixedSize: const Size.fromHeight(36),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: const RoundedRectangleBorder(),
+      ),
       child: isLeft
           ? Row(
               spacing: 4,
               children: [
-                Icon(icon, size: 20, color: onPressed != null ? Stylesheet.blue : Stylesheet.theme.withOpacity(0.3)),
-                Text('${preChapter} 장', style: TextStyle(fontSize: 12, color: onPressed != null ? Stylesheet.theme : Stylesheet.theme.withOpacity(0.3))),
+                Icon(
+                  icon,
+                  size: 20,
+                  color: onPressed != null ? Stylesheet.blue : Stylesheet.theme.withOpacity(0.3),
+                ),
+                Text(
+                  '$preChapter 장',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: onPressed != null ? Stylesheet.theme : Stylesheet.theme.withOpacity(0.3),
+                  ),
+                ),
               ],
             )
           : Row(
               spacing: 4,
               children: [
-                Text('${nextChapter} 장', style: TextStyle(fontSize: 12, color: onPressed != null ? Stylesheet.theme : Stylesheet.theme.withOpacity(0.3))),
-                Icon(icon, size: 20, color: onPressed != null ? Stylesheet.blue : Stylesheet.theme.withOpacity(0.3)),
+                Text(
+                  '$nextChapter 장',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: onPressed != null ? Stylesheet.theme : Stylesheet.theme.withOpacity(0.3),
+                  ),
+                ),
+                Icon(
+                  icon,
+                  size: 20,
+                  color: onPressed != null ? Stylesheet.blue : Stylesheet.theme.withOpacity(0.3),
+                ),
               ],
             ),
     );
@@ -58,19 +91,19 @@ class _BibleScreenState extends State<BibleScreen> {
   }
 
   Future<void> _init() async {
-    final vm = context.read<BibleViewModel>();
+    final BibleViewModel vm = context.read<BibleViewModel>();
     await vm.loadBooks();
     if (!mounted || vm.books.isEmpty) return;
 
-    final lastRead = await vm.getLastRead();
+    final LastReadPosition? lastRead = await vm.getLastRead();
     if (!mounted) return;
 
     if (lastRead != null) {
       try {
-        final book = vm.books.firstWhere((b) => b.korean == lastRead.bookKorean);
+        final BibleBook book = vm.books.firstWhere((b) => b.korean == lastRead.bookKorean);
         await vm.selectBook(book);
         if (!mounted) return;
-        final chapter = vm.chapters.firstWhere((c) => c.chapterNum == lastRead.chapterNum);
+        final Chapter chapter = vm.chapters.firstWhere((c) => c.chapterNum == lastRead.chapterNum);
         await vm.selectChapter(chapter);
         return;
       } catch (_) {}
@@ -92,9 +125,14 @@ class _BibleScreenState extends State<BibleScreen> {
   }
 
   void _openVerseMemoSheet(BuildContext context, BibleViewModel bibleVm, Verse verse) {
-    final noteVm = context.read<NoteViewModel>();
-    final verseText = '${bibleVm.selectedBook!.korean} ${bibleVm.selectedChapter!.chapterNum}장 ${verse.verseNum}절';
-    final hasNote = noteVm.hasNoteForVerse(bibleVm.selectedBook!.korean, bibleVm.selectedChapter!.chapterNum, verse.verseNum);
+    final NoteViewModel noteVm = context.read<NoteViewModel>();
+    final verseText =
+        '${bibleVm.selectedBook!.korean} ${bibleVm.selectedChapter!.chapterNum}장 ${verse.verseNum}절';
+    final bool hasNote = noteVm.hasNoteForVerse(
+      bibleVm.selectedBook!.korean,
+      bibleVm.selectedChapter!.chapterNum,
+      verse.verseNum,
+    );
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -110,8 +148,17 @@ class _BibleScreenState extends State<BibleScreen> {
                   verseText: verseText,
                   onTap: () {
                     Navigator.pop(context);
-                    print('data: ${bibleVm.selectedBook!.korean}, ${bibleVm.selectedChapter!.chapterNum}, ${verse.verseNum}');
-                    context.pushNamed(AppRoute.newNote, extra: {'book': bibleVm.selectedBook!.korean, 'chapter': bibleVm.selectedChapter!.chapterNum, 'verse': verse.verseNum});
+                    print(
+                      'data: ${bibleVm.selectedBook!.korean}, ${bibleVm.selectedChapter!.chapterNum}, ${verse.verseNum}',
+                    );
+                    context.pushNamed(
+                      AppRoute.newNote,
+                      extra: {
+                        'book': bibleVm.selectedBook!.korean,
+                        'chapter': bibleVm.selectedChapter!.chapterNum,
+                        'verse': verse.verseNum,
+                      },
+                    );
                   },
                 ),
               ),
@@ -122,7 +169,12 @@ class _BibleScreenState extends State<BibleScreen> {
                     verseText: verseText,
                     onTap: () {
                       Navigator.pop(context);
-                      noteVm.openNoteForVerse(context, bibleVm.selectedBook!.korean, bibleVm.selectedChapter!.chapterNum, verse.verseNum);
+                      noteVm.openNoteForVerse(
+                        context,
+                        bibleVm.selectedBook!.korean,
+                        bibleVm.selectedChapter!.chapterNum,
+                        verse.verseNum,
+                      );
                     },
                   ),
                 ),
@@ -156,10 +208,17 @@ class _BibleScreenState extends State<BibleScreen> {
               onTap: () => _openNavigationSheet(context, vm),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                decoration: BoxDecoration(color: Stylesheet.noteBackground, borderRadius: BorderRadius.circular(20)),
+                decoration: BoxDecoration(
+                  color: Stylesheet.noteBackground,
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 child: Text(
                   chipLabel,
-                  style: const TextStyle(color: Stylesheet.theme, fontSize: 14, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                    color: Stylesheet.theme,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
@@ -170,13 +229,24 @@ class _BibleScreenState extends State<BibleScreen> {
                 child: Container(
                   height: 36,
                   clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(color: Stylesheet.noteBackground, borderRadius: BorderRadius.circular(20)),
+                  decoration: BoxDecoration(
+                    color: Stylesheet.noteBackground,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _StepperButton(icon: Icons.chevron_left, onPressed: vm.hasPreviousChapter ? vm.goToPreviousChapter : null, isLeft: true),
+                      _StepperButton(
+                        icon: Icons.chevron_left,
+                        onPressed: vm.hasPreviousChapter ? vm.goToPreviousChapter : null,
+                        isLeft: true,
+                      ),
                       Container(width: 1, height: 20, color: Stylesheet.blue.withOpacity(0.2)),
-                      _StepperButton(icon: Icons.chevron_right, onPressed: vm.hasNextChapter ? vm.goToNextChapter : null, isLeft: false),
+                      _StepperButton(
+                        icon: Icons.chevron_right,
+                        onPressed: vm.hasNextChapter ? vm.goToNextChapter : null,
+                        isLeft: false,
+                      ),
                     ],
                   ),
                 ),
@@ -190,7 +260,7 @@ class _BibleScreenState extends State<BibleScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   itemCount: vm.verses.length,
                   itemBuilder: (context, index) {
-                    final verse = vm.verses[index];
+                    final Verse verse = vm.verses[index];
                     return InkWell(
                       borderRadius: BorderRadius.circular(8),
                       onTap: () => _openVerseMemoSheet(context, vm, verse),
@@ -203,11 +273,22 @@ class _BibleScreenState extends State<BibleScreen> {
                               width: 28,
                               child: Text(
                                 verse.verseNum,
-                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Stylesheet.theme),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Stylesheet.theme,
+                                ),
                               ),
                             ),
                             Expanded(
-                              child: Text(verse.text, style: const TextStyle(fontSize: 16, color: Stylesheet.label, height: 1.6)),
+                              child: Text(
+                                verse.text,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Stylesheet.label,
+                                  height: 1.6,
+                                ),
+                              ),
                             ),
                           ],
                         ),

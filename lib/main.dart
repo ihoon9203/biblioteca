@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'core/app_config.dart';
 import 'core/router.dart';
 import 'core/stylesheet.dart';
 import 'data/datasources/bible_local_datasource.dart';
+import 'data/datasources/notes_data_source.dart';
 import 'data/datasources/notes_local_datasource.dart';
+import 'data/datasources/notes_remote_datasource.dart';
 import 'data/datasources/preferences_local_datasource.dart';
 import 'data/repositories/bible_repository_impl.dart';
 import 'data/repositories/note_repository_impl.dart';
@@ -31,7 +34,13 @@ class BibliotecaApp extends StatelessWidget {
     final bibleRepository = BibleRepositoryImpl(BibleLocalDataSource());
     final prefsRepository =
         PreferencesRepositoryImpl(PreferencesLocalDataSource());
-    final noteRepository = NoteRepositoryImpl(NotesLocalDataSource());
+    // Swap note storage by flipping AppConfig.noteStorage — the rest of the
+    // app depends only on the NotesDataSource interface.
+    final NotesDataSource notesDataSource = switch (AppConfig.noteStorage) {
+      NoteStorageMode.local => NotesLocalDataSource(),
+      NoteStorageMode.remote => NotesRemoteDataSource(),
+    };
+    final noteRepository = NoteRepositoryImpl(notesDataSource);
 
     return MultiProvider(
       providers: [

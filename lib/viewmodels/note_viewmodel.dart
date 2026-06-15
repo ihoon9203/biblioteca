@@ -5,11 +5,11 @@ import '../domain/usecases/get_notes_usecase.dart';
 import '../domain/usecases/save_note_usecase.dart';
 
 class NoteViewModel extends ChangeNotifier {
+
+  NoteViewModel({required this.saveNoteUseCase, required this.getNotesUseCase, required this.deleteNoteUseCase});
   final SaveNoteUseCase saveNoteUseCase;
   final GetNotesUseCase getNotesUseCase;
   final DeleteNoteUseCase deleteNoteUseCase;
-
-  NoteViewModel({required this.saveNoteUseCase, required this.getNotesUseCase, required this.deleteNoteUseCase});
 
   List<Note> _notes = [];
   List<Note> get notes => List.unmodifiable(_notes);
@@ -40,14 +40,14 @@ class NoteViewModel extends ChangeNotifier {
   }
 
   bool hasNoteForVerse(String bookKorean, String chapterNum, String verseNum) {
-    final v = int.tryParse(verseNum) ?? 0;
+    final int v = int.tryParse(verseNum) ?? 0;
     return _notes.any(
       (note) =>
           note.bookKorean == bookKorean &&
           note.chapterNum == chapterNum &&
           note.verseRanges.any((r) {
-            final start = int.tryParse(r.startVerseNum) ?? 0;
-            final end = int.tryParse(r.endVerseNum) ?? 0;
+            final int start = int.tryParse(r.startVerseNum) ?? 0;
+            final int end = int.tryParse(r.endVerseNum) ?? 0;
             return v >= start && v <= end;
           }),
     );

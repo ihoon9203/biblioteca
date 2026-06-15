@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:biblioteca/core/stylesheet.dart';
+import '../../core/stylesheet.dart';
 
 class VerseSelectOptionButton extends StatelessWidget {
-  const VerseSelectOptionButton({super.key, required this.newCard, required this.verseText, this.onTap});
+  const VerseSelectOptionButton({
+    super.key,
+    required this.newCard,
+    required this.verseText,
+    this.onTap,
+  });
 
   final String verseText;
   final bool newCard;
@@ -22,9 +27,13 @@ class VerseSelectOptionButton extends StatelessWidget {
             ? Column(
                 spacing: 10,
                 children: [
-                  Text(
+                  const Text(
                     '말씀 추가하기',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Stylesheet.label),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Stylesheet.label,
+                    ),
                   ),
                   Text(verseText, style: const TextStyle(fontSize: 14, color: Stylesheet.theme)),
                 ],
@@ -32,9 +41,13 @@ class VerseSelectOptionButton extends StatelessWidget {
             : Column(
                 spacing: 10,
                 children: [
-                  Text(
+                  const Text(
                     '말씀 읽기',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Stylesheet.primary),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Stylesheet.primary,
+                    ),
                   ),
                   Text(verseText, style: const TextStyle(fontSize: 14, color: Stylesheet.primary)),
                 ],

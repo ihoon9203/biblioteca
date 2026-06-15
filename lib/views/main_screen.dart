@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../core/stylesheet.dart';
 
 class MainScreen extends StatefulWidget {
-  final StatefulNavigationShell navigationShell;
 
   const MainScreen({super.key, required this.navigationShell});
+  final StatefulNavigationShell navigationShell;
 
   @override
   State<MainScreen> createState() => _MainScreenState();

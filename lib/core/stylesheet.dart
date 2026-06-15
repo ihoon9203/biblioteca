@@ -13,6 +13,7 @@ abstract final class Stylesheet {
   static const Color noteBackground = Color(0xFFDDEBFF);
   static const Color buttonPink = Color(0xFFFF2D55);
   static const Color highlight = Color(0x54FFDFDF); // FFDFDF @ 33%
+  static const Color numberFieldFlash = Color(0xFFFFC9C9); // flash when a number field is auto-corrected
 
   // ── Gradients ─────────────────────────────────────────────────────────────
   static const LinearGradient aiGradient = LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF6155F5), Color(0xFFFF2D55)]);
@@ -54,12 +55,22 @@ abstract final class Stylesheet {
 
   static const BoxDecoration iconButtonWhiteDecoration = BoxDecoration(color: primary, borderRadius: BorderRadius.all(Radius.circular(40)), boxShadow: iconButtonWhiteShadow);
 
-  static const BoxDecoration iconButtonBlueDecoration = BoxDecoration(color: blue, borderRadius: BorderRadius.all(Radius.circular(40)), boxShadow: iconButtonBlueShadow);
+  static const BoxDecoration iconButtonBlueDecoration = BoxDecoration(
+    color: blue,
+    borderRadius: BorderRadius.all(Radius.circular(40)),
+    border: Border.fromBorderSide(BorderSide(color: themeLight)),
+  );
 
   static const BoxDecoration rangeTextFieldDecoration = BoxDecoration(
     color: primary,
     borderRadius: BorderRadius.all(Radius.circular(8)),
     border: Border.fromBorderSide(BorderSide(color: Color(0x78DFE9FF))),
+  );
+
+  static const BoxDecoration numberTextFieldDecoration = BoxDecoration(
+    color: noteBackground,
+    borderRadius: BorderRadius.all(Radius.circular(8)),
+    border: Border.fromBorderSide(BorderSide(color: noteBackground)),
   );
 
   static const BoxDecoration bigButtonDecoration = BoxDecoration(gradient: aiGradient, borderRadius: BorderRadius.all(Radius.circular(16)));

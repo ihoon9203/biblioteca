@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:biblioteca/core/stylesheet.dart';
-import 'package:biblioteca/domain/entities/bible_book.dart';
-import 'package:biblioteca/domain/entities/chapter.dart';
-import 'package:biblioteca/viewmodels/bible_viewmodel.dart';
+import '../../core/stylesheet.dart';
+import '../../domain/entities/bible_book.dart';
+import '../../domain/entities/chapter.dart';
+import '../../viewmodels/bible_viewmodel.dart';
 
 class BibleNavigationSheet extends StatefulWidget {
   const BibleNavigationSheet({super.key, required this.vm});
@@ -31,13 +31,13 @@ class _BibleNavigationSheetState extends State<BibleNavigationSheet> {
   }
 
   void _jumpToBook(BibleBook book) {
-    final index = widget.vm.books.indexWhere((b) => b.korean == book.korean);
+    final int index = widget.vm.books.indexWhere((b) => b.korean == book.korean);
     if (index >= 0) _bookScroll.jumpTo(index * _itemHeight);
   }
 
   void _jumpToChapter(String? chapterNum) {
     if (chapterNum == null) return;
-    final index = _previewBook.chapters.indexWhere((c) => c.chapterNum == chapterNum);
+    final int index = _previewBook.chapters.indexWhere((c) => c.chapterNum == chapterNum);
     if (index >= 0) _chapterScroll.jumpTo(index * _itemHeight);
   }
 
@@ -47,7 +47,7 @@ class _BibleNavigationSheetState extends State<BibleNavigationSheet> {
   }
 
   Future<void> _onChapterTap(Chapter chapter) async {
-    final vm = widget.vm;
+    final BibleViewModel vm = widget.vm;
     Navigator.pop(context);
     if (_previewBook.korean != vm.selectedBook!.korean) {
       await vm.selectBook(_previewBook);
@@ -64,7 +64,7 @@ class _BibleNavigationSheetState extends State<BibleNavigationSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = widget.vm;
+    final BibleViewModel vm = widget.vm;
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.65,
@@ -89,7 +89,14 @@ class _BibleNavigationSheetState extends State<BibleNavigationSheet> {
             padding: const EdgeInsets.fromLTRB(20, 10, 12, 10),
             child: Row(
               children: [
-                const Text('성경', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Stylesheet.label)),
+                const Text(
+                  '성경',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Stylesheet.label,
+                  ),
+                ),
                 const Spacer(),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
@@ -111,7 +118,7 @@ class _BibleNavigationSheetState extends State<BibleNavigationSheet> {
                     itemCount: vm.books.length,
                     itemExtent: _itemHeight,
                     itemBuilder: (context, index) {
-                      final book = vm.books[index];
+                      final BibleBook book = vm.books[index];
                       final isPreviewing = book.korean == _previewBook.korean;
                       final isCurrentlyRead = book.korean == vm.selectedBook!.korean;
 
@@ -125,12 +132,14 @@ class _BibleNavigationSheetState extends State<BibleNavigationSheet> {
                             book.korean,
                             style: TextStyle(
                               fontSize: 14,
-                              fontWeight: isPreviewing || isCurrentlyRead ? FontWeight.w600 : FontWeight.w400,
+                              fontWeight: isPreviewing || isCurrentlyRead
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
                               color: isPreviewing
                                   ? Stylesheet.blue
                                   : isCurrentlyRead
-                                      ? Stylesheet.blue.withOpacity(0.5)
-                                      : Stylesheet.label,
+                                  ? Stylesheet.blue.withOpacity(0.5)
+                                  : Stylesheet.label,
                             ),
                           ),
                         ),
@@ -146,9 +155,10 @@ class _BibleNavigationSheetState extends State<BibleNavigationSheet> {
                     itemCount: _previewBook.chapters.length,
                     itemExtent: _itemHeight,
                     itemBuilder: (context, index) {
-                      final chapter = _previewBook.chapters[index];
+                      final Chapter chapter = _previewBook.chapters[index];
                       final isSameBook = _previewBook.korean == vm.selectedBook!.korean;
-                      final isSelected = isSameBook && chapter.chapterNum == vm.selectedChapter?.chapterNum;
+                      final bool isSelected =
+                          isSameBook && chapter.chapterNum == vm.selectedChapter?.chapterNum;
 
                       return InkWell(
                         onTap: () => _onChapterTap(chapter),
