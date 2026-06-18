@@ -10,7 +10,6 @@ import '../viewmodels/note_viewmodel.dart';
 enum _RangeField { startChapter, startVerse, endChapter, endVerse }
 
 class NewNoteScreen extends StatefulWidget {
-
   const NewNoteScreen({super.key, required this.book, required this.chapter, required this.verse});
   final String book;
   final String chapter;
@@ -195,8 +194,16 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
       return;
     }
 
-    final List<int> start = [_bookIndex(_startBook), _readInt(_startChapterCtrl), _readInt(_startVerseCtrl)];
-    final List<int> end = [_bookIndex(_endBook), _readInt(_endChapterCtrl), _readInt(_endVerseCtrl)];
+    final List<int> start = [
+      _bookIndex(_startBook),
+      _readInt(_startChapterCtrl),
+      _readInt(_startVerseCtrl),
+    ];
+    final List<int> end = [
+      _bookIndex(_endBook),
+      _readInt(_endChapterCtrl),
+      _readInt(_endVerseCtrl),
+    ];
     if (_comparePos(start, end) <= 0) return; // already ordered
 
     if (editedEnd) {
@@ -358,12 +365,14 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
               ),
               child: switch (_selectedType) {
                 MemoType.sermon => const _SermonSection(key: ValueKey(MemoType.sermon)),
+                // QT & 공부 share one key so switching between them updates the
+                // label in place (no transition); only sermon↔content animates.
                 MemoType.qt => const _ContentSection(
-                  key: ValueKey(MemoType.qt),
+                  key: ValueKey('content'),
                   label: 'QT 내용 추가하기',
                 ),
                 MemoType.study => const _ContentSection(
-                  key: ValueKey(MemoType.study),
+                  key: ValueKey('content'),
                   label: '공부 내용 추가하기',
                 ),
                 null => const SizedBox.shrink(key: ValueKey('none')),
@@ -377,7 +386,6 @@ class _NewNoteScreenState extends State<NewNoteScreen> {
 }
 
 class _ActivityTypeButton extends StatelessWidget {
-
   const _ActivityTypeButton({required this.label, required this.isSelected, required this.onTap});
   final String label;
   final bool isSelected;
@@ -396,7 +404,7 @@ class _ActivityTypeButton extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Stylesheet.theme,
+            color: isSelected ? Colors.white : Stylesheet.secondary,
             fontWeight: FontWeight.w500,
             fontSize: 15,
           ),
@@ -407,7 +415,6 @@ class _ActivityTypeButton extends StatelessWidget {
 }
 
 class _VerseRangeRow extends StatelessWidget {
-
   const _VerseRangeRow({
     required this.selectedBook,
     required this.chapterController,
@@ -443,12 +450,16 @@ class _VerseRangeRow extends StatelessWidget {
                 Text(
                   selectedBook.isEmpty ? '책 선택' : selectedBook,
                   style: const TextStyle(
-                    color: Stylesheet.theme,
+                    color: Stylesheet.secondary,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Icon(Icons.keyboard_arrow_down_rounded, color: Stylesheet.theme, size: 20),
+                const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Stylesheet.secondary,
+                  size: 20,
+                ),
               ],
             ),
           ),
@@ -467,7 +478,6 @@ class _VerseRangeRow extends StatelessWidget {
 }
 
 class _NumberField extends StatefulWidget {
-
   const _NumberField({super.key, required this.controller, required this.onCommit});
   final TextEditingController controller;
   final VoidCallback onCommit;
@@ -575,7 +585,7 @@ class _SermonSection extends StatelessWidget {
         const Center(
           child: Text(
             '녹음을 시작하면 메모 화면으로 이동할 수 있어요',
-            style: TextStyle(color: Stylesheet.theme, fontSize: 13),
+            style: TextStyle(color: Stylesheet.label, fontSize: 13),
             textAlign: TextAlign.center,
           ),
         ),
@@ -585,7 +595,6 @@ class _SermonSection extends StatelessWidget {
 }
 
 class _ContentSection extends StatefulWidget {
-
   const _ContentSection({super.key, required this.label});
   final String label;
 
@@ -642,7 +651,6 @@ class _ContentSectionState extends State<_ContentSection> {
 }
 
 class _ContentModeButton extends StatelessWidget {
-
   const _ContentModeButton({required this.icon, required this.isBlue, required this.onTap});
   final IconData icon;
   final bool isBlue;
@@ -660,7 +668,7 @@ class _ContentModeButton extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(20)),
           boxShadow: isBlue ? Stylesheet.blueCardShadow : Stylesheet.whiteCardShadow,
         ),
-        child: Icon(icon, color: isBlue ? Colors.white : Stylesheet.theme, size: 36),
+        child: Icon(icon, color: isBlue ? Colors.white : Stylesheet.secondary, size: 36),
       ),
     );
   }

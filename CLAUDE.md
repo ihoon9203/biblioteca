@@ -26,6 +26,8 @@ Dependency rule: views → viewmodels → usecases → repository interfaces ←
 
 **Imports: use `package:biblioteca/...` absolute paths, NOT relative `../../`.** (Bible screens live in nested `views/bible/`, so relative imports get noisy.)
 
+**One widget class per file: every Dart file must contain at most one widget class.** Split additional widgets into their own files (private helper widgets included).
+
 ## Navigation (go_router + 3 tabs)
 
 - 3 screens: **성경** (`BibleScreen` `/`), **말씀노트** (`NotesScreen` `/notes`), **나** (`MeScreen` `/me`).

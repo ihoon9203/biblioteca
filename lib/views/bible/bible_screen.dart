@@ -92,6 +92,9 @@ class _BibleScreenState extends State<BibleScreen> {
 
   Future<void> _init() async {
     final BibleViewModel vm = context.read<BibleViewModel>();
+    // Load notes so verse highlights show on first launch, not only after
+    // visiting the notes tab.
+    context.read<NoteViewModel>().loadNotes();
     await vm.loadBooks();
     if (!mounted || vm.books.isEmpty) return;
 
@@ -185,10 +188,19 @@ class _BibleScreenState extends State<BibleScreen> {
     );
   }
 
+  /// Maps a note's highlight level (recency order, see [NoteViewModel]) to its
+  /// background decoration. Returns null when the verse has no note.
+  BoxDecoration? _highlightDecoration(int? level) => switch (level) {
+    0 => Stylesheet.verseHighlightDecoration,
+    1 => Stylesheet.verseHighlightSecondaryDecoration,
+    2 => Stylesheet.verseHighlightTertiaryDecoration,
+    _ => null,
+  };
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<BibleViewModel>(
-      builder: (context, vm, _) {
+    return Consumer2<BibleViewModel, NoteViewModel>(
+      builder: (context, vm, noteVm, _) {
         if (vm.selectedBook == null) {
           return const Scaffold(
             backgroundColor: Stylesheet.primary,
@@ -261,11 +273,20 @@ class _BibleScreenState extends State<BibleScreen> {
                   itemCount: vm.verses.length,
                   itemBuilder: (context, index) {
                     final Verse verse = vm.verses[index];
+                    final BoxDecoration? highlight = _highlightDecoration(
+                      noteVm.highlightLevelForVerse(
+                        vm.selectedBook!.korean,
+                        vm.selectedChapter!.chapterNum,
+                        verse.verseNum,
+                      ),
+                    );
                     return InkWell(
                       borderRadius: BorderRadius.circular(8),
                       onTap: () => _openVerseMemoSheet(context, vm, verse),
-                      child: Padding(
+                      child: Container(
+                        decoration: highlight,
                         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                        margin: const EdgeInsets.only(bottom: 4),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

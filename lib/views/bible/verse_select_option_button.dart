@@ -22,7 +22,7 @@ class VerseSelectOptionButton extends StatelessWidget {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 60),
-        decoration: newCard ? Stylesheet.whiteCardDecoration : Stylesheet.blueCardDecoration,
+        decoration: newCard ? Stylesheet.whiteLargeCardDecoration : Stylesheet.blueCardDecoration,
         child: newCard
             ? Column(
                 spacing: 10,

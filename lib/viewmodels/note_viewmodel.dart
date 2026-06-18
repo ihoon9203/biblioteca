@@ -39,6 +39,31 @@ class NoteViewModel extends ChangeNotifier {
     await loadNotes();
   }
 
+  /// Highlight level for a verse, or null when no note covers it.
+  ///
+  /// Notes in the chapter are ordered by [Note.createdAt]; each note's color
+  /// cycles highlight → secondary → tertiary → highlight (`index % 3`). When
+  /// several notes cover the same verse, the most recent one wins (we iterate
+  /// oldest-first and let later notes overwrite), matching the "overlay in time
+  /// order" rule.
+  int? highlightLevelForVerse(String bookKorean, String chapterNum, String verseNum) {
+    final int v = int.tryParse(verseNum) ?? 0;
+    final List<Note> chapterNotes =
+        _notes.where((n) => n.bookKorean == bookKorean && n.chapterNum == chapterNum).toList()
+          ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+    int? level;
+    for (int i = 0; i < chapterNotes.length; i++) {
+      final bool covers = chapterNotes[i].verseRanges.any((r) {
+        final int start = int.tryParse(r.startVerseNum) ?? 0;
+        final int end = int.tryParse(r.endVerseNum) ?? 0;
+        return v >= start && v <= end;
+      });
+      if (covers) level = i % 3;
+    }
+    return level;
+  }
+
   bool hasNoteForVerse(String bookKorean, String chapterNum, String verseNum) {
     final int v = int.tryParse(verseNum) ?? 0;
     return _notes.any(
